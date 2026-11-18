@@ -1,0 +1,63 @@
+---
+// interface Props {
+//   tabs: string[];
+// }
+
+const { tabs } = Astro.props;
+---
+
+<div class="tabs-wrapper w-full">
+  <!-- ট্যাব বাটনগুলো -->
+  <div class="flex border-b border-gray-200 gap-6" role="tablist">
+    {tabs.map((tab, index) => (
+      <button
+        type="button"
+        role="tab"
+        data-index={index}
+        aria-selected={index === 0 ? "true" : "false"}
+        class="tab-btn  py-2 text-md font-semibold uppercase border-b-2 border-transparent text-gray-500 hover:text-gray-800 aria-selected:border-blue-600 aria-selected:text-blue-600 transition-colors cursor-pointer"
+      >
+        {tab}
+      </button>
+    ))}
+  </div>
+
+  <!-- ট্যাবের কন্টেন্ট প্যানেলগুলো -->
+  <div class="tab-panels mt-4">
+    <slot />
+  </div>
+</div>
+
+<script>
+  function setupTabs() {
+    document.querySelectorAll('.tabs-wrapper').forEach((wrapper) => {
+      const buttons = wrapper.querySelectorAll('.tab-btn');
+      const panels = wrapper.querySelectorAll('.tab-panels > *');
+
+      // শুরুতে প্রথম প্যানেল বাদে বাকিগুলো হাইড রাখবে
+      panels.forEach((panel, i) => {
+        if (i !== 0) panel.classList.add('hidden');
+      });
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const activeIndex = btn.getAttribute('data-index');
+
+          // বাটন আপডেট
+          buttons.forEach((b) => {
+            b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+          });
+
+          // প্যানেল আপডেট
+          panels.forEach((panel, i) => {
+            panel.classList.toggle('hidden', String(i) !== activeIndex);
+          });
+        });
+      });
+    });
+  }
+
+  // পেজ লোড এবং View Transitions সাপোর্টের জন্য
+  setupTabs();
+  document.addEventListener('astro:after-swap', setupTabs);
+</script>

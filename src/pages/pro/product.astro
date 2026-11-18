@@ -1,0 +1,28 @@
+---
+export const prerender = false;
+
+import Master from '../../layouts/master.astro';
+import SingleProduct from '../../components/single-product.astro';
+
+// const response = await fetch("https://admin.comcitybd.com/api/brand/d-link?page=1");
+const response = await fetch("https://admin.comcitybd.com/api/brand/afox?page=1");
+const products = await response.json();
+console.log(products);
+---
+
+<Master title="Product">
+    <h2>Product Page</h2>
+
+    <section class="text-gray-600 body-font">
+      <div class="container px-5 py-24 mx-auto">
+        <div class="flex flex-wrap -m-4">
+
+          {products.data.map((product) => (
+          <SingleProduct product={product} />
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    
+</Master>
